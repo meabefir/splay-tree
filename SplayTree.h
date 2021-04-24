@@ -14,9 +14,17 @@ public:
 	//getter setter
 	Node* getRoot();
 
-	void calcMaxes();
+	void fixTree();
 
+	Node* findNode(int value, Node* = nullptr);
+
+	void rotate(Node*);
+	void rotateRight(Node*);
+	void rotateLeft(Node*);
+
+	void splayUp(Node*);
 	void insert(int);
+	void remove(int);
 	void inorder(Node* node = nullptr);
 
 	unsigned getMaxLevel();

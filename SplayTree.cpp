@@ -3,21 +3,13 @@
 
 SplayTree::SplayTree()
 {
-    this->insert(3413);
-    this->insert(3252);
-    this->insert(4535);
-    this->insert(2132);
-    this->insert(6786);
-    this->insert(1231);
-    this->insert(3252);
-    this->insert(6545);
-    this->insert(1231);
-    this->insert(1412);
-    this->insert(5235);
-    this->insert(12);
-    this->insert(2121);
-    this->insert(5235);
-    this->insert(1211);
+    this->insert(5);
+    this->insert(3);
+    this->insert(7);
+    this->insert(1);
+    this->insert(4);
+    this->insert(6);
+    this->insert(8);
 }
 
 SplayTree::~SplayTree()
@@ -30,10 +22,117 @@ Node* SplayTree::getRoot()
     return this->root;
 }
 
-void SplayTree::calcMaxes()
+void SplayTree::fixTree()
 {
+    //std::cout << this->root->data << '\n';
     this->root->calcMax();
     this->root->applyOffset();
+
+    /*this->inorder();
+    std::cout << '\n';*/
+}
+
+Node* SplayTree::findNode(int value, Node* curr_node)
+{
+    if (curr_node == nullptr)
+        curr_node = this->root;
+    if (curr_node->data == value)
+        return curr_node;
+    else
+    {
+        if (value < curr_node->data)
+        {
+            if (curr_node->left != nullptr)
+                return findNode(value, curr_node->left);
+            else
+                return curr_node;
+        }
+        else if (value > curr_node->data)
+        {
+            if (curr_node->right != nullptr)
+                return findNode(value, curr_node->right);
+            else
+                return curr_node;
+        }
+    }
+}
+
+void SplayTree::rotate(Node* node)
+{
+    if (node->parent == nullptr)
+        return;
+    std::cout << " Rotating " << node->data << '\n';
+    if (node->parent->left == node)
+        this->rotateRight(node);
+    else if (node->parent->right == node)
+        this->rotateLeft(node);
+}
+
+void SplayTree::rotateRight(Node* node)
+{
+    Node* old_parent = node->parent;
+    Node* old_right = node->right;
+
+    old_parent->left = old_right;
+    if (old_right != nullptr)
+    {
+        old_right->parent = old_parent;
+    }
+
+    if (old_parent->parent != nullptr)
+    {
+        node->parent = old_parent->parent;
+        if (old_parent->parent->left == old_parent)
+            old_parent->parent->left = node;
+        else
+            old_parent->parent->right = node;
+    }
+    else if (old_parent->parent == nullptr)
+    {
+        this->root = node;
+        node->parent = nullptr;
+    }
+
+    node->right = old_parent;
+    old_parent->parent = node;
+
+    this->fixTree();
+}
+
+void SplayTree::rotateLeft(Node* node)
+{
+    Node* old_parent = node->parent;
+    Node* old_left = node->left;
+
+    old_parent->right = old_left;
+    if (old_left != nullptr)
+    {
+        old_left->parent = old_parent;
+    }
+
+    if (old_parent->parent != nullptr)
+    {
+        node->parent = old_parent->parent;
+        if (old_parent->parent->left == old_parent)
+            old_parent->parent->left = node;
+        else
+            old_parent->parent->right = node;
+    }
+    else if (old_parent->parent == nullptr)
+    {
+        this->root = node;
+        node->parent = nullptr;
+    }
+
+    node->left = old_parent;
+    old_parent->parent = node;
+
+    this->fixTree();
+}
+
+void SplayTree::splayUp(Node* node)
+{
+
 }
 
 void SplayTree::insert(int val)
@@ -44,7 +143,7 @@ void SplayTree::insert(int val)
     if (root == nullptr)
     {
         root = new Node(this, val);
-        this->calcMaxes();
+        this->fixTree();
         return;
     }
 
@@ -56,7 +155,7 @@ void SplayTree::insert(int val)
             if (curr_node->left == nullptr)
             {
                 curr_node->left = new Node(this, curr_node, val);
-                this->calcMaxes();
+                this->fixTree();
                 return;
             }
             else
@@ -67,13 +166,23 @@ void SplayTree::insert(int val)
             if (curr_node->right == nullptr)
             {
                 curr_node->right = new Node(this, curr_node, val);
-                this->calcMaxes();
+                this->fixTree();
                 return;
             }
             else
                 curr_node = curr_node->right;
         }
     }
+}
+
+void SplayTree::remove(int value)
+{
+    if (this->root == nullptr)
+        return;
+
+    Node* node = this->findNode(value, this->root);
+
+    std::cout << " node found " << node->data << '\n';
 }
 
 void SplayTree::inorder(Node* node)

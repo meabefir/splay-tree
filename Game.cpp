@@ -96,7 +96,7 @@ void Game::draw()
 
 	if (this->states.size())
 	{
-		this->states.top()->draw(this->window);
+		this->states.top()->draw(this->window, this->UIView);
 	}
 
 	this->window->display();

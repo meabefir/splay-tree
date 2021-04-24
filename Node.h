@@ -13,8 +13,6 @@ private:
 	Node* right;
 	SplayTree* tree;
 
-	int nrLeftNodes;
-	int nrRightNodes;
 	int maxLeft;
 	int maxRight;
 

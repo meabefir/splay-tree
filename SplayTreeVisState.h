@@ -1,6 +1,8 @@
 #pragma once
 #include "State.h"
 #include "SplayTree.h"
+#include "InputButton.h"
+#include "Component.h"
 
 class SplayTreeVisState: public State
 {
@@ -15,6 +17,6 @@ public:
 
 	void handleEvents(sf::Event);
 	void update(const float dt);
-	void draw(sf::RenderTarget*);
+	void draw(sf::RenderTarget*, sf::View*);
 };
 

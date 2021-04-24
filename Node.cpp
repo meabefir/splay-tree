@@ -202,6 +202,9 @@ void Node::draw(sf::RenderTarget* target)
 
 void Node::calcMax()
 {
+	this->maxLeft = 1;
+	this->maxRight = 1;
+
 	if (this->left != nullptr)
 		this->left->calcMax();
 

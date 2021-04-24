@@ -7,11 +7,14 @@
 
 #include <SFML/Graphics.hpp>
 
+class Component;
+
 class State
 {
 protected:
 	sf::RenderWindow* window;
 	std::stack<State*>* states;
+	std::unordered_map<std::string, Component*> components;
 
 	bool quit = false;
 
@@ -23,7 +26,7 @@ public:
 	bool getQuit();
 
 	virtual void update(const float dt) = 0;
-	virtual void draw(sf::RenderTarget*) = 0;
+	virtual void draw(sf::RenderTarget*, sf::View*) = 0;
 	virtual void handleEvents(sf::Event) = 0;
 };
 

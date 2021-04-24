@@ -2,11 +2,16 @@
 #include "Mouse.h"
 #include <ctime>
 
+
 SplayTreeVisState::SplayTreeVisState(sf::RenderWindow* window, std::stack<State*>* states): 
 	State(window, states)
 {
 	srand(time(0));
 	splayTree = new SplayTree();
+
+	this->components["INSERT_INPUT"] = new InputButton(sf::Vector2f(10.f, 10.f), sf::Vector2f(100.f, 40.f),"INSERT");
+	this->components["DELETE_INPUT"] = new InputButton(sf::Vector2f(210.f, 10.f), sf::Vector2f(100.f, 40.f),"DELETE");
+	this->components["ROTATION_INPUT"] = new InputButton(sf::Vector2f(410.f, 10.f), sf::Vector2f(100.f, 40.f),"ROTATE");
 }
 
 SplayTreeVisState::~SplayTreeVisState()
@@ -59,15 +64,39 @@ void SplayTreeVisState::handleEvents(sf::Event e)
 			this->window->setView(curr_view);
 		}
 	}
+
+	State::handleEvents(e);
 }
 
 void SplayTreeVisState::update(const float dt)
 {
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::A))
+	{
 		this->splayTree->insert(std::rand() % 10000);
+	}
+
+	State::update(dt);
+	
+	for (auto& comp : this->components)
+	{
+		InputButton* inp= dynamic_cast<InputButton*>(comp.second);
+		if (inp->isPressed())
+			if (inp->getInput() != "")
+			{
+				if (comp.first == "INSERT_INPUT")
+					this->splayTree->insert(std::stoi(inp->getInput()));
+				else if (comp.first == "DELETE_INPUT")
+					this->splayTree->remove(std::stoi(inp->getInput()));
+				else if (comp.first == "ROTATION_INPUT")
+					this->splayTree->rotate(this->splayTree->findNode(std::stoi(inp->getInput())));
+				inp->resetInput();
+			}
+	}
 }
 
-void SplayTreeVisState::draw(sf::RenderTarget* target)
+void SplayTreeVisState::draw(sf::RenderTarget* target, sf::View* UIView)
 {
 	this->splayTree->draw(target);
+
+	State::draw(target, UIView);
 }
