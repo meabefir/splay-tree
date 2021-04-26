@@ -39,3 +39,18 @@ bool Helper::mouseInBox(sf::FloatRect rect)
         return true;
     return false;
 }
+
+sf::Vector2f Helper::vectorMoveTowards(sf::Vector2f from, sf::Vector2f to, sf::Vector2f by)
+{
+    if (std::abs(Helper::VectorLength(to - from)) <= Helper::VectorLength(by))
+        return to;
+    else
+        return from + by;
+}
+
+//def move_towards(self, vec, delta) :
+//    if abs((self - vec).get_length()) <= delta :
+//        return vec
+//    else :
+//        new_vec = self + (vec - self).normalized() * delta
+//        return new_vec

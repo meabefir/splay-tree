@@ -1,9 +1,6 @@
 ﻿  Node.cpp
-C:\Users\Strutul\Desktop\visual studio\splay tree\splay tree\Node.cpp(94,10): warning C4244: 'initializing': conversion from 'double' to 'int', possible loss of data
-C:\Users\Strutul\Desktop\visual studio\splay tree\splay tree\Node.cpp(95,20): warning C4244: '=': conversion from 'double' to 'int', possible loss of data
-C:\Users\Strutul\Desktop\visual studio\splay tree\splay tree\Node.cpp(116,42): warning C4244: 'argument': conversion from 'float' to 'unsigned int', possible loss of data
-  SplayTree.cpp
-  Generating Code...
-C:\Users\Strutul\Desktop\visual studio\splay tree\splay tree\SplayTree.cpp(58): warning C4715: 'SplayTree::findNode': not all control paths return a value
-C:\Users\Strutul\Desktop\visual studio\splay tree\splay tree\SplayTree.cpp(206): warning C4715: 'SplayTree::getMaxLevel': not all control paths return a value
+C:\Users\Strutul\Desktop\visual studio\splay tree\splay tree\Node.cpp(99,10): warning C4244: 'initializing': conversion from 'double' to 'int', possible loss of data
+C:\Users\Strutul\Desktop\visual studio\splay tree\splay tree\Node.cpp(100,20): warning C4244: '=': conversion from 'double' to 'int', possible loss of data
+C:\Users\Strutul\Desktop\visual studio\splay tree\splay tree\Node.cpp(121,42): warning C4244: 'argument': conversion from 'float' to 'unsigned int', possible loss of data
+C:\Users\Strutul\Desktop\visual studio\splay tree\splay tree\Node.cpp(142,20): warning C4018: '<': signed/unsigned mismatch
   splay tree.vcxproj -> C:\Users\Strutul\Desktop\visual studio\splay tree\Debug\splay tree.exe

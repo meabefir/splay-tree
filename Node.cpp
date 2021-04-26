@@ -1,5 +1,6 @@
 #include "Node.h"
 #include "SplayTree.h"
+#include "Helper.h"
 
 // statics
 float Node::radius = 40.f;
@@ -15,13 +16,13 @@ float Node::xMargin = 10.f;
 sf::Color Node::fillColor = sf::Color(255, 183, 3);
 
 Node::Node(SplayTree* tree, Node* parent, int data):
-	tree(tree), parent(parent), data(data), left(nullptr), right(nullptr), vertexArray(sf::LinesStrip, 3)
+	tree(tree), parent(parent), data(data), left(nullptr), right(nullptr), vertexArray(sf::LineStrip, 3)
 {
 	this->init();
 }
 
 Node::Node(SplayTree* tree, int data):
-	tree(tree), data(data), parent(nullptr), left(nullptr), right(nullptr), vertexArray(sf::LinesStrip, 3)
+	tree(tree), data(data), parent(nullptr), left(nullptr), right(nullptr), vertexArray(sf::LineStrip, 3)
 {
 	this->init();
 }
@@ -30,10 +31,9 @@ Node::~Node()
 {
 	std::cout << " Node " << this << " deleted\n";
 	this->parent = nullptr;
-	delete left;
 	this->left = nullptr;
-	delete right;
 	this->right = nullptr;
+	delete this->nodeHighlight;
 }
 
 void Node::setPosition(sf::Vector2f pos)
@@ -45,6 +45,11 @@ void Node::setPosition(sf::Vector2f pos)
 sf::Vector2f Node::getPosition()
 {
 	return this->shape.getPosition();
+}
+
+int Node::getData()
+{
+	return this->data;
 }
 
 unsigned Node::getLevel()
@@ -134,8 +139,62 @@ void Node::init()
 	/// temp
 
 	// set line color
-	for (int i = 0; i < 3; i++)
+	for (int i = 0; i < this->vertexArray.getVertexCount(); i++)
 		this->vertexArray[i].color = sf::Color(33, 158, 188);
+	
+	this->nodeHighlight = new NodeHighlight(this);
+}
+
+void Node::update(const float dt)
+{
+	// update highlight
+	this->nodeHighlight->update(dt);
+
+	if (this->target == this->getPosition())
+	{
+		this->target = sf::Vector2f();
+		this->moveVector = sf::Vector2f();
+	}
+
+	if (this->moveVector != sf::Vector2f())
+	{
+		this->setPosition(Helper::vectorMoveTowards(this->getPosition(), this->target, this->moveVector));
+		if (this->getPosition() == this->target)
+		{
+			this->moveVector = sf::Vector2f();
+			this->target = sf::Vector2f();
+		}
+
+		// update self lines
+		this->vertexArray[1].position = this->getPosition();
+		if (this->left != nullptr)
+			this->vertexArray[0].position = this->left->getPosition();
+		else
+			this->vertexArray[0].position = this->getPosition();
+		if (this->right != nullptr)
+			this->vertexArray[2].position = this->right->getPosition();
+		else
+			this->vertexArray[2].position = this->getPosition();
+
+		// update parent lines
+		// check what type of child it is
+		if (this->parent != nullptr)
+		{
+			if (this->parent->left == this)
+			{
+				this->parent->vertexArray[0] = this->getPosition();
+			}
+			else // if its a right child
+			{
+				this->parent->vertexArray[2] = this->getPosition();
+			}
+		}
+	}
+
+	if (this->left != nullptr)
+		this->left->update(dt);
+	if (this->right != nullptr)
+		this->right->update(dt);
 }
 
 void Node::draw(sf::RenderTarget* target)
@@ -144,19 +203,11 @@ void Node::draw(sf::RenderTarget* target)
 	target->draw(this->shape);
 	target->draw(this->textRender);
 
-	/*target->draw(this->maxLeftTextRender);
-	target->draw(this->maxRightTextRender);*/
+	this->nodeHighlight->draw(target);
 
 	// draw and set vertex coords
 	if (this->left != nullptr || this->right != nullptr)
 	{
-		/*this->vertexArray[1].position = this->getPosition();
-		this->vertexArray[0].position = this->getPosition();
-		this->vertexArray[2].position = this->getPosition();
-		if (this->left != nullptr)
-			this->vertexArray[0].position = this->left->getPosition();
-		if (this->right != nullptr)
-			this->vertexArray[2].position = this->right->getPosition();*/
 		target->draw(vertexArray);
 	}
 
@@ -246,7 +297,7 @@ void Node::applyOffset()
 			// update line that connects this to parent
 			this->parent->vertexArray[0].position = new_pos;
 			if (this->parent->right == nullptr)
-				this->parent->vertexArray[2] = this->parent->getPosition();
+				this->parent->vertexArray[2].position = this->parent->getPosition();
 		}
 
 		// if i am a right child
@@ -260,7 +311,7 @@ void Node::applyOffset()
 			// update line that connects this to parent
 			this->parent->vertexArray[2].position = new_pos;
 			if (this->parent->left == nullptr)
-				this->parent->vertexArray[0] = this->parent->getPosition();
+				this->parent->vertexArray[0].position = this->parent->getPosition();
 		}
 	}
 
@@ -274,4 +325,47 @@ void Node::applyOffset()
 		this->left->applyOffset();
 	if (this->right != nullptr)
 		this->right->applyOffset();
+}
+
+void Node::setTarget()
+{
+	if (this->parent == nullptr)
+	{
+		this->target = sf::Vector2f(GameData::windowSize.x / 2.f, Node::yStart);
+	}
+	else
+	{
+		int level = this->getLevel();
+		// if i am a left child
+		if (this == this->parent->left)
+		{
+			sf::Vector2f new_pos;
+			new_pos.x = this->parent->target.x - this->maxRight * (Node::radius + xMargin);
+			new_pos.y = Node::yStart + level * Node::yMargin;
+			this->target = new_pos;
+		}
+
+		// if i am a right child
+		else if (this == this->parent->right)
+		{
+			sf::Vector2f new_pos;
+			new_pos.x = this->parent->target.x + this->maxLeft * (Node::radius + xMargin);
+			new_pos.y = Node::yStart + level * Node::yMargin;
+			this->target = new_pos;
+		}
+	}
+
+	// set move vector aka speed
+	// it should take 200 frames
+	this->moveVector = (this->target - this->getPosition()) / GameData::transitionDuration * 1.2f;
+
+	if (this->left != nullptr)
+		this->left->setTarget();
+	if (this->right != nullptr)
+		this->right->setTarget();
+}
+
+void Node::highlight()
+{
+	this->nodeHighlight->start();
 }

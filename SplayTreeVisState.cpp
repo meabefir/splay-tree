@@ -2,7 +2,6 @@
 #include "Mouse.h"
 #include <ctime>
 
-
 SplayTreeVisState::SplayTreeVisState(sf::RenderWindow* window, std::stack<State*>* states): 
 	State(window, states)
 {
@@ -12,6 +11,13 @@ SplayTreeVisState::SplayTreeVisState(sf::RenderWindow* window, std::stack<State*
 	this->components["INSERT_INPUT"] = new InputButton(sf::Vector2f(10.f, 10.f), sf::Vector2f(100.f, 40.f),"INSERT");
 	this->components["DELETE_INPUT"] = new InputButton(sf::Vector2f(210.f, 10.f), sf::Vector2f(100.f, 40.f),"DELETE");
 	this->components["ROTATION_INPUT"] = new InputButton(sf::Vector2f(410.f, 10.f), sf::Vector2f(100.f, 40.f),"ROTATE");
+	this->components["FIND_INPUT"] = new InputButton(sf::Vector2f(610.f, 10.f), sf::Vector2f(100.f, 40.f),"FIND");
+
+	this->components["SUCCESSOR_INPUT"] = new InputButton(sf::Vector2f(10.f, 60.f), sf::Vector2f(100.f, 40.f),"SUCC");
+	this->components["PREDECESSOR_INPUT"] = new InputButton(sf::Vector2f(210.f, 60.f), sf::Vector2f(100.f, 40.f),"PRED");
+
+	this->components["FIND_COMPONENT"] = new FindComponent(this->splayTree);
+	this->components["ROTATE_COMPONENT"] = new RotateComponent(this->splayTree);
 }
 
 SplayTreeVisState::~SplayTreeVisState()
@@ -32,6 +38,12 @@ void SplayTreeVisState::handleEvents(sf::Event e)
 	{
 		if (e.key.code == sf::Keyboard::Key::R)
 			this->resetTree();
+	}
+
+	if (e.type == sf::Event::KeyReleased)
+	{
+		if (e.key.code == sf::Keyboard::Key::Q)
+			this->splayTree->insert(std::rand() % 10000);
 	}
 
 	// uncomment this after you make ui elemets unaffected by panning
@@ -70,17 +82,21 @@ void SplayTreeVisState::handleEvents(sf::Event e)
 
 void SplayTreeVisState::update(const float dt)
 {
+	// update components
+	State::update(dt);
+
+	// update splay tree
+	this->splayTree->update(dt);
+
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::A))
 	{
 		this->splayTree->insert(std::rand() % 10000);
 	}
-
-	State::update(dt);
 	
 	for (auto& comp : this->components)
 	{
 		InputButton* inp= dynamic_cast<InputButton*>(comp.second);
-		if (inp->isPressed())
+		if (inp != nullptr && inp->isPressed())
 			if (inp->getInput() != "")
 			{
 				if (comp.first == "INSERT_INPUT")
@@ -88,7 +104,47 @@ void SplayTreeVisState::update(const float dt)
 				else if (comp.first == "DELETE_INPUT")
 					this->splayTree->remove(std::stoi(inp->getInput()));
 				else if (comp.first == "ROTATION_INPUT")
-					this->splayTree->rotate(this->splayTree->findNode(std::stoi(inp->getInput())));
+				{
+					//this->splayTree->rotate(this->splayTree->findNode(std::stoi(inp->getInput())));
+					auto rotate_comp = dynamic_cast<RotateComponent*>(this->components["ROTATE_COMPONENT"]);
+					rotate_comp->splay(rotate_comp->findNode(std::stoi(inp->getInput()), this->splayTree->getRoot()));
+				}
+				else if (comp.first == "FIND_INPUT")
+				{
+					if (this->splayTree->getRoot() != nullptr)
+					{
+						/*Node* found = this->splayTree->findNode(std::stoi(inp->getInput()), this->splayTree->getRoot());
+						found->highlight();*/
+						auto find_comp = dynamic_cast<FindComponent*>(this->components["FIND_COMPONENT"]);
+						find_comp->findNode(std::stoi(inp->getInput()), this->splayTree->getRoot());
+					}
+				}
+				else if (comp.first == "SUCCESSOR_INPUT")
+				{
+					Node* found = splayTree->findNode(std::stoi(inp->getInput()), this->splayTree->getRoot());
+					if (found != nullptr && found->getData() >= std::stoi(inp->getInput()))
+					{
+						found->highlight();
+					}
+					else
+					{
+						found = this->splayTree->getSuccessor(found);
+						found->highlight();
+					}
+				}
+				else if (comp.first == "PREDECESSOR_INPUT")
+				{
+					Node* found = splayTree->findNode(std::stoi(inp->getInput()), this->splayTree->getRoot());
+					if (found != nullptr && found->getData() <= std::stoi(inp->getInput()))
+					{
+						found->highlight();
+					}
+					else
+					{
+						found = this->splayTree->getPredecessor(found);
+						found->highlight();
+					}
+				}
 				inp->resetInput();
 			}
 	}

@@ -37,5 +37,7 @@ public:
 	void handleEvents(sf::Event e);
 	void update(const float dt);
 	void draw(sf::RenderTarget* target, sf::View* UIView);
+
+	friend class InputButton;
 };
 

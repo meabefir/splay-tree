@@ -47,6 +47,11 @@ const bool Button::isPressed() const
 	return false;
 }
 
+void Button::setPressed()
+{
+	this->buttonState = BTN_PRESSED;
+}
+
 
 //functions 
 

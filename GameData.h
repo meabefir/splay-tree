@@ -5,6 +5,7 @@ class GameData
 {
 public:
 	static sf::Vector2f windowSize;
+	static float transitionDuration;
 
 	static void setWindowSize(sf::Vector2f);
 };

@@ -31,6 +31,8 @@ public:
 	// accessors
 	const bool isPressed() const;
 
+	void setPressed();
+
 	// functions 
 	void update();
 	void draw(sf::RenderTarget* target);

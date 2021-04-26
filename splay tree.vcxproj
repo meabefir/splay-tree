@@ -149,6 +149,7 @@
   <ItemGroup>
     <ClCompile Include="Button.cpp" />
     <ClCompile Include="Component.cpp" />
+    <ClCompile Include="FindComponent.cpp" />
     <ClCompile Include="FontManager.cpp" />
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="GameData.cpp" />
@@ -157,6 +158,8 @@
     <ClCompile Include="InputButton.cpp" />
     <ClCompile Include="Mouse.cpp" />
     <ClCompile Include="Node.cpp" />
+    <ClCompile Include="NodeHighlight.cpp" />
+    <ClCompile Include="RotateComponent.cpp" />
     <ClCompile Include="splay tree.cpp" />
     <ClCompile Include="SplayTree.cpp" />
     <ClCompile Include="SplayTreeVisState.cpp" />
@@ -165,6 +168,7 @@
   <ItemGroup>
     <ClInclude Include="Button.h" />
     <ClInclude Include="Component.h" />
+    <ClInclude Include="FindComponent.h" />
     <ClInclude Include="FontManager.h" />
     <ClInclude Include="Game.h" />
     <ClInclude Include="GameData.h" />
@@ -173,6 +177,8 @@
     <ClInclude Include="InputButton.h" />
     <ClInclude Include="Mouse.h" />
     <ClInclude Include="Node.h" />
+    <ClInclude Include="NodeHighlight.h" />
+    <ClInclude Include="RotateComponent.h" />
     <ClInclude Include="SplayTree.h" />
     <ClInclude Include="SplayTreeVisState.h" />
     <ClInclude Include="State.h" />

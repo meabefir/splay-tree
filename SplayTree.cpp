@@ -3,13 +3,7 @@
 
 SplayTree::SplayTree()
 {
-    this->insert(5);
-    this->insert(3);
-    this->insert(7);
-    this->insert(1);
-    this->insert(4);
-    this->insert(6);
-    this->insert(8);
+  
 }
 
 SplayTree::~SplayTree()
@@ -32,27 +26,32 @@ void SplayTree::fixTree()
     std::cout << '\n';*/
 }
 
-Node* SplayTree::findNode(int value, Node* curr_node)
+Node* SplayTree::findNode(int value, Node* curr_node, Node* parent)
 {
+    if (this->root == nullptr)
+        return nullptr;
+
     if (curr_node == nullptr)
-        curr_node = this->root;
+    {
+        this->splay(parent);
+        return parent;
+    }
+
     if (curr_node->data == value)
+    {
+        this->splay(curr_node);
         return curr_node;
+    }
     else
     {
         if (value < curr_node->data)
         {
-            if (curr_node->left != nullptr)
-                return findNode(value, curr_node->left);
-            else
-                return curr_node;
+            return findNode(value, curr_node->left, curr_node);
+
         }
         else if (value > curr_node->data)
         {
-            if (curr_node->right != nullptr)
-                return findNode(value, curr_node->right);
-            else
-                return curr_node;
+            return findNode(value, curr_node->right, curr_node);
         }
     }
 }
@@ -130,9 +129,45 @@ void SplayTree::rotateLeft(Node* node)
     this->fixTree();
 }
 
-void SplayTree::splayUp(Node* node)
+void SplayTree::splay(Node* node) 
 {
+    // if node is root do nothing
+    if (node == this->root)
+        return;
+    // if node is child of root
+    if (node->parent == this->root)
+    {
+        this->rotate(node);
+    }
+    else
+    {
+        // check if zig zig or zig zag
+        int zig_count = 0;
+        // check parent
+        if (node->parent->left == node)
+            zig_count += 1;
+        else
+            zig_count -= 1;
+        // check grandparent
+        if (node->parent->parent->left == node->parent)
+            zig_count += 1;
+        else
+            zig_count -= 1;
 
+        // if zig_count == 0 that meansa zig zag, else it means zag
+        if (zig_count == 0)
+        {
+            this->rotate(node);
+            //this->rotate(node->parent);
+            this->splay(node);
+        }
+        else
+        {
+            this->rotate(node->parent);
+            //this->rotate(node);
+            this->splay(node);
+        }
+    }
 }
 
 void SplayTree::insert(int val)
@@ -154,7 +189,9 @@ void SplayTree::insert(int val)
         {
             if (curr_node->left == nullptr)
             {
-                curr_node->left = new Node(this, curr_node, val);
+                Node* new_node = new Node(this, curr_node, val);
+                curr_node->left = new_node;
+                this->splay(new_node);
                 this->fixTree();
                 return;
             }
@@ -165,7 +202,9 @@ void SplayTree::insert(int val)
         {
             if (curr_node->right == nullptr)
             {
-                curr_node->right = new Node(this, curr_node, val);
+                Node* new_node = new Node(this, curr_node, val);
+                curr_node->right = new_node;
+                this->splay(new_node);
                 this->fixTree();
                 return;
             }
@@ -182,7 +221,66 @@ void SplayTree::remove(int value)
 
     Node* node = this->findNode(value, this->root);
 
-    std::cout << " node found " << node->data << '\n';
+    if (node->data == value)
+    {
+        // no longer splaying here, we always splay when searching
+        // now we remove the root
+        if (this->root->left != nullptr)
+        {
+            if (this->root->left->right == nullptr)
+            {
+                // we just make left the root and connect its right child to the old right child of the old root
+                this->root->left->right = this->root->right;
+                if (this->root->right != nullptr)
+                    this->root->right->parent = this->root->left;
+                Node* old_root = this->root;
+                this->root = this->root->left;
+                this->root->parent = nullptr;
+                delete old_root;
+            }
+            else
+            {
+                // store the right subtree
+                Node* right_subtree = this->root->right;
+                right_subtree->parent = nullptr;
+                this->root->right = nullptr;
+                // set the root to be the left subtree
+                Node* old_root = this->root;
+                this->root = this->root->left;
+                this->root->parent = nullptr;
+                delete old_root;
+                // we make the root of the left subtree its biggets element and then we make it the root of the tree
+                Node* biggest_in_left_subtree = this->getBiggestInSubtree(this->root);
+                // we splay the biggest element we found in the subtree, so now the root wont have a right child
+                this->splay(biggest_in_left_subtree);
+                this->root->right = right_subtree;
+                right_subtree->parent = this->root;
+            }
+        }
+        else
+        {
+            if (this->root->right != nullptr)
+            {
+                // make right subtree the root
+                this->root = this->root->right;
+                delete this->root->parent;
+                this->root->parent = nullptr;
+            }
+            else
+            {
+                // root had no children, we just remove it
+                delete this->root;
+                this->root = nullptr;
+            }
+        }
+    }
+    else
+    {
+        // we didnt find the value we looked for, we just splay the closest node
+        this->splay(node);
+    }
+
+    this->fixTree();
 }
 
 void SplayTree::inorder(Node* node)
@@ -197,6 +295,54 @@ void SplayTree::inorder(Node* node)
         this->inorder(node->right);
 }
 
+Node* SplayTree::getSuccessor(Node* node)
+{
+    if (node == nullptr)
+        return nullptr;
+    if (node->right != nullptr)
+    {
+        Node* curr_node = node->right;
+        while (curr_node->left != nullptr)
+            curr_node = curr_node->left;
+        return curr_node;
+    }
+    else
+    {
+        Node* curr_node = node;
+        while (curr_node->parent != nullptr)
+        {
+            if (curr_node->data >= node->data)
+                return curr_node;
+            curr_node = curr_node->parent;
+        }
+        return curr_node;
+    }
+}
+
+Node* SplayTree::getPredecessor(Node* node)
+{
+    if (node == nullptr)
+        return nullptr;
+    if (node->left != nullptr)
+    {
+        Node* curr_node = node->left;
+        while (curr_node->right != nullptr)
+            curr_node = curr_node->right;
+        return curr_node;
+    }
+    else
+    {
+        Node* curr_node = node;
+        while (curr_node->parent != nullptr)
+        {
+            if (curr_node->data <= node->data)
+                return curr_node;
+            curr_node = curr_node->parent;
+        }
+        return curr_node;
+    }
+}
+    
 unsigned SplayTree::getMaxLevel()
 {
     if (this->root == nullptr)
@@ -214,6 +360,26 @@ int SplayTree::traverseHeight(Node* node, int lvl)
         return lvl;
 
     return std::max(this->traverseHeight(node->left, lvl + 1), this->traverseHeight(node->right, lvl + 1));
+}
+
+Node* SplayTree::getBiggestInSubtree(Node* node)
+{
+    if (node == nullptr)
+    {
+        return nullptr;
+    }
+    Node* curr = node;
+    while (curr->right != nullptr)
+    {
+        curr = curr->right;
+    }
+    return curr;
+}
+
+void SplayTree::update(const float dt)
+{
+    if (this->root != nullptr)
+        this->root->update(dt);
 }
 
 void SplayTree::draw(sf::RenderTarget* target)

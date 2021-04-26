@@ -2,6 +2,7 @@
 #include "State.h"
 #include "GameData.h"
 #include "FontManager.h"
+#include "NodeHighlight.h"
 
 class SplayTree;
 
@@ -12,6 +13,9 @@ private:
 	Node* left;
 	Node* right;
 	SplayTree* tree;
+
+	sf::Vector2f target;
+	sf::Vector2f moveVector;
 
 	int maxLeft;
 	int maxRight;
@@ -33,6 +37,8 @@ private:
 	sf::CircleShape shape;
 	sf::VertexArray vertexArray;
 
+	NodeHighlight* nodeHighlight;
+
 public:
 	Node(SplayTree*, Node* parent, int data);
 	Node(SplayTree*, int data);
@@ -41,16 +47,24 @@ public:
 	// setter getter
 	void setPosition(sf::Vector2f);
 	sf::Vector2f getPosition();
+	int getData();
 
 	unsigned getLevel();
 	unsigned getIndexInLevel();
 
 	void init();
+	void update(const float dt);
 	void draw(sf::RenderTarget*);
 
 	void calcMax();
 	void applyOffset();
+	void setTarget();
+
+	void highlight();
 
 	friend class SplayTree;
+	friend class NodeHighlight;
+	friend class FindComponent;
+	friend class RotateComponent;
 };
 

@@ -10,5 +10,6 @@ public:
 	static sf::Vector2f GetNormalizedVector(const sf::Vector2f&);
 	static sf::Vector2f vectorRotatedRad(sf::Vector2f vec, float rad);
 	static bool mouseInBox(sf::FloatRect);
+	static sf::Vector2f vectorMoveTowards(sf::Vector2f, sf::Vector2f, sf::Vector2f);
 };
 

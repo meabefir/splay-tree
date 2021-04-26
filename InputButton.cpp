@@ -32,9 +32,12 @@ void InputButton::resetInput()
 void InputButton::handleEvents(sf::Event e)
 {
 	this->inputBox.handleEvents(e);
+
+	/*if (e.type == sf::Event::TextEntered)
+		if (e.text.unicode == 13)
+			if (this->inputBox.inFocus)
+				this->button.setPressed();*/
 }
-
-
 
 void InputButton::update(const float dt)
 {

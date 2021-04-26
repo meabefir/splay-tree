@@ -3,6 +3,8 @@
 #include "SplayTree.h"
 #include "InputButton.h"
 #include "Component.h"
+#include "FindComponent.h"
+#include "RotateComponent.h"
 
 class SplayTreeVisState: public State
 {
