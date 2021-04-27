@@ -17,6 +17,7 @@ public:
 	void fixTree();
 
 	Node* findNode(int value, Node* = nullptr, Node* = nullptr);
+	Node* findNodeWithoutFix(int value, Node* = nullptr, Node* = nullptr);
 
 	void rotate(Node*);
 	void rotateRight(Node*);

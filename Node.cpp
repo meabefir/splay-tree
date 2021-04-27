@@ -52,6 +52,34 @@ int Node::getData()
 	return this->data;
 }
 
+void Node::updateLines()
+{
+	// update self lines
+	this->vertexArray[1].position = this->getPosition();
+	if (this->left != nullptr)
+		this->vertexArray[0].position = this->left->getPosition();
+	else
+		this->vertexArray[0].position = this->getPosition();
+	if (this->right != nullptr)
+		this->vertexArray[2].position = this->right->getPosition();
+	else
+		this->vertexArray[2].position = this->getPosition();
+
+	this->updateParentLine();
+}
+
+void Node::updateParentLine()
+{
+	if (this->parent == nullptr)
+		return;
+	// if left child
+	if (this->parent->left == this)
+		this->parent->vertexArray[0] = this->getPosition();
+	if (this->parent->right == this)
+		this->parent->vertexArray[2] = this->getPosition();
+
+}
+
 unsigned Node::getLevel()
 {
 	if (this->parent == nullptr)
@@ -140,8 +168,13 @@ void Node::init()
 
 	// set line color
 	for (int i = 0; i < this->vertexArray.getVertexCount(); i++)
+	{
 		this->vertexArray[i].color = sf::Color(33, 158, 188);
-	
+		this->vertexArray[i].position = this->getPosition();
+	}
+
+	this->updateParentLine();
+
 	this->nodeHighlight = new NodeHighlight(this);
 }
 
@@ -156,6 +189,8 @@ void Node::update(const float dt)
 		this->moveVector = sf::Vector2f();
 	}
 
+	this->updateLines();
+
 	if (this->moveVector != sf::Vector2f())
 	{
 		this->setPosition(Helper::vectorMoveTowards(this->getPosition(), this->target, this->moveVector));
@@ -163,31 +198,6 @@ void Node::update(const float dt)
 		{
 			this->moveVector = sf::Vector2f();
 			this->target = sf::Vector2f();
-		}
-
-		// update self lines
-		this->vertexArray[1].position = this->getPosition();
-		if (this->left != nullptr)
-			this->vertexArray[0].position = this->left->getPosition();
-		else
-			this->vertexArray[0].position = this->getPosition();
-		if (this->right != nullptr)
-			this->vertexArray[2].position = this->right->getPosition();
-		else
-			this->vertexArray[2].position = this->getPosition();
-
-		// update parent lines
-		// check what type of child it is
-		if (this->parent != nullptr)
-		{
-			if (this->parent->left == this)
-			{
-				this->parent->vertexArray[0] = this->getPosition();
-			}
-			else // if its a right child
-			{
-				this->parent->vertexArray[2] = this->getPosition();
-			}
 		}
 	}
 
@@ -271,10 +281,6 @@ void Node::calcMax()
 	{
 		this->maxRight = this->right->maxRight + this->right->maxLeft;
 	}
-
-	// temp
-	/*this->maxLeftTextRender.setString(std::to_string(this->maxLeft));
-	this->maxRightTextRender.setString(std::to_string(this->maxRight));*/
 }
 
 void Node::applyOffset()

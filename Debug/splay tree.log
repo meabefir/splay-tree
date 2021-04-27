@@ -1,6 +1,64 @@
-﻿  Node.cpp
-C:\Users\Strutul\Desktop\visual studio\splay tree\splay tree\Node.cpp(99,10): warning C4244: 'initializing': conversion from 'double' to 'int', possible loss of data
-C:\Users\Strutul\Desktop\visual studio\splay tree\splay tree\Node.cpp(100,20): warning C4244: '=': conversion from 'double' to 'int', possible loss of data
-C:\Users\Strutul\Desktop\visual studio\splay tree\splay tree\Node.cpp(121,42): warning C4244: 'argument': conversion from 'float' to 'unsigned int', possible loss of data
-C:\Users\Strutul\Desktop\visual studio\splay tree\splay tree\Node.cpp(142,20): warning C4018: '<': signed/unsigned mismatch
+﻿  FindComponent.cpp
+  Game.cpp
+C:\Users\Strutul\Desktop\visual studio\splay tree\splay tree\Game.cpp(25,63): warning C4244: 'argument': conversion from 'unsigned int' to 'T', possible loss of data
+          with
+          [
+              T=float
+          ]
+C:\Users\Strutul\Desktop\visual studio\splay tree\splay tree\Game.cpp(25,42): warning C4244: 'argument': conversion from 'unsigned int' to 'T', possible loss of data
+          with
+          [
+              T=float
+          ]
+C:\Users\Strutul\Desktop\visual studio\splay tree\splay tree\Game.cpp(26,50): warning C4244: 'argument': conversion from 'unsigned int' to 'T', possible loss of data
+          with
+          [
+              T=float
+          ]
+C:\Users\Strutul\Desktop\visual studio\splay tree\splay tree\Game.cpp(26,29): warning C4244: 'argument': conversion from 'unsigned int' to 'T', possible loss of data
+          with
+          [
+              T=float
+          ]
+C:\Users\Strutul\Desktop\visual studio\splay tree\splay tree\Game.cpp(29,77): warning C4244: 'argument': conversion from 'unsigned int' to 'T', possible loss of data
+          with
+          [
+              T=float
+          ]
+C:\Users\Strutul\Desktop\visual studio\splay tree\splay tree\Game.cpp(29,56): warning C4244: 'argument': conversion from 'unsigned int' to 'T', possible loss of data
+          with
+          [
+              T=float
+          ]
+C:\Users\Strutul\Desktop\visual studio\splay tree\splay tree\Game.cpp(30,50): warning C4244: 'argument': conversion from 'unsigned int' to 'T', possible loss of data
+          with
+          [
+              T=float
+          ]
+C:\Users\Strutul\Desktop\visual studio\splay tree\splay tree\Game.cpp(30,29): warning C4244: 'argument': conversion from 'unsigned int' to 'T', possible loss of data
+          with
+          [
+              T=float
+          ]
+C:\Users\Strutul\Desktop\visual studio\splay tree\splay tree\Game.cpp(33,73): warning C4244: 'argument': conversion from 'unsigned int' to 'T', possible loss of data
+          with
+          [
+              T=float
+          ]
+C:\Users\Strutul\Desktop\visual studio\splay tree\splay tree\Game.cpp(33,52): warning C4244: 'argument': conversion from 'unsigned int' to 'T', possible loss of data
+          with
+          [
+              T=float
+          ]
+C:\Users\Strutul\Desktop\visual studio\splay tree\splay tree\Game.cpp(55,51): warning C4244: '=': conversion from 'sf::Int32' to 'float', possible loss of data
+  Node.cpp
+C:\Users\Strutul\Desktop\visual studio\splay tree\splay tree\Node.cpp(127,10): warning C4244: 'initializing': conversion from 'double' to 'int', possible loss of data
+C:\Users\Strutul\Desktop\visual studio\splay tree\splay tree\Node.cpp(128,20): warning C4244: '=': conversion from 'double' to 'int', possible loss of data
+C:\Users\Strutul\Desktop\visual studio\splay tree\splay tree\Node.cpp(149,42): warning C4244: 'argument': conversion from 'float' to 'unsigned int', possible loss of data
+C:\Users\Strutul\Desktop\visual studio\splay tree\splay tree\Node.cpp(170,20): warning C4018: '<': signed/unsigned mismatch
+  RotateComponent.cpp
+  SplayTreeVisState.cpp
+C:\Users\Strutul\Desktop\visual studio\splay tree\splay tree\SplayTreeVisState.cpp(9,12): warning C4244: 'argument': conversion from 'time_t' to 'unsigned int', possible loss of data
+  Generating Code...
+C:\Users\Strutul\Desktop\visual studio\splay tree\splay tree\RotateComponent.cpp(41): warning C4715: 'RotateComponent::findNode': not all control paths return a value
   splay tree.vcxproj -> C:\Users\Strutul\Desktop\visual studio\splay tree\Debug\splay tree.exe

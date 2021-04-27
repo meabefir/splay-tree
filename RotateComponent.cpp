@@ -1,8 +1,8 @@
 #include "RotateComponent.h"
 
 
-RotateComponent::RotateComponent(SplayTree* tree):
-    tree(tree)
+RotateComponent::RotateComponent(std::unordered_map<std::string, Component*>* components, SplayTree* tree):
+    tree(tree), components(components), running(false), timeLeft(0.f)
 {
 }
 
@@ -40,8 +40,15 @@ Node* RotateComponent::findNode(int value, Node* curr_node, Node* parent)
     }
 }
 
+void RotateComponent::resetTimer()
+{
+    this->timeLeft = GameData::transitionDuration;
+}
+
 void RotateComponent::rotate(Node* node)
 {
+    if (node == nullptr)
+        return;
     if (node->parent == nullptr)
         return;
     if (node->parent->left == node)
@@ -112,6 +119,11 @@ void RotateComponent::rotateLeft(Node* node)
     this->fixTree();
 }
 
+void RotateComponent::setTree(SplayTree* tree)
+{
+    this->tree = tree;
+}
+
 void RotateComponent::splay(Node* node)
 {
     // if node is root do nothing
@@ -120,7 +132,7 @@ void RotateComponent::splay(Node* node)
     // if node is child of root
     if (node->parent == this->tree->root)
     {
-        this->rotate(node);
+        this->nodesToRotate.push_back({ node, 0 });
         running = true;
     }
     else
@@ -141,15 +153,17 @@ void RotateComponent::splay(Node* node)
         // if zig_count == 0 that meansa zig zag, else it means zag
         if (zig_count == 0)
         {
-            this->rotate(node);
-            this->nodesToRotate.push_back(node);
+            this->nodesToRotate.push_back({ node, 0 });
             this->running = true;
             //this->splay(node);
         }
         else
         {
-            this->rotate(node->parent);
-            this->nodesToRotate.push_back(node);
+            // rotate parent
+            this->nodesToRotate.push_back({ node, 1 });
+            // rotate self
+            this->nodesToRotate.push_back({ node, 0 });
+
             this->running = true;
             //this->splay(node);
         }
@@ -158,8 +172,11 @@ void RotateComponent::splay(Node* node)
 
 void RotateComponent::fixTree()
 {
-    this->tree->root->calcMax();
-    this->tree->root->setTarget();
+    if (this->tree->root != nullptr)
+    {
+        this->tree->root->calcMax();
+        this->tree->root->setTarget();
+    }
 }
 
 void RotateComponent::handleEvents(sf::Event e)
@@ -175,7 +192,14 @@ void RotateComponent::update(const float dt)
         {
             this->timeLeft += GameData::transitionDuration;
             
-            this->splay(nodesToRotate[0]);
+
+            if (this->nodesToRotate[0].second == 0)
+                this->rotate(nodesToRotate[0].first);
+            else
+                this->rotate(nodesToRotate[0].first->parent);
+
+            this->splay(nodesToRotate[0].first);
+
             this->nodesToRotate.erase(this->nodesToRotate.begin());
 
             if (this->nodesToRotate.size() == 0)

@@ -156,9 +156,11 @@
     <ClCompile Include="Helper.cpp" />
     <ClCompile Include="InputBox.cpp" />
     <ClCompile Include="InputButton.cpp" />
+    <ClCompile Include="InsertComponent.cpp" />
     <ClCompile Include="Mouse.cpp" />
     <ClCompile Include="Node.cpp" />
     <ClCompile Include="NodeHighlight.cpp" />
+    <ClCompile Include="PauseState.cpp" />
     <ClCompile Include="RotateComponent.cpp" />
     <ClCompile Include="splay tree.cpp" />
     <ClCompile Include="SplayTree.cpp" />
@@ -175,9 +177,11 @@
     <ClInclude Include="Helper.h" />
     <ClInclude Include="InputBox.h" />
     <ClInclude Include="InputButton.h" />
+    <ClInclude Include="InsertComponent.h" />
     <ClInclude Include="Mouse.h" />
     <ClInclude Include="Node.h" />
     <ClInclude Include="NodeHighlight.h" />
+    <ClInclude Include="PauseState.h" />
     <ClInclude Include="RotateComponent.h" />
     <ClInclude Include="SplayTree.h" />
     <ClInclude Include="SplayTreeVisState.h" />

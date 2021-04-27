@@ -49,6 +49,9 @@ public:
 	sf::Vector2f getPosition();
 	int getData();
 
+	void updateLines();
+	void updateParentLine();
+
 	unsigned getLevel();
 	unsigned getIndexInLevel();
 

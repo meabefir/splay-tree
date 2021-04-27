@@ -94,10 +94,17 @@ void Game::draw()
 {
 	this->window->clear(sf::Color(24, 44, 52));
 
-	if (this->states.size())
+	std::stack<State*> temp(this->states);
+	while (temp.size())
+	{
+		temp.top()->draw(this->window, this->UIView);
+		temp.pop();
+	}
+
+	/*if (this->states.size())
 	{
 		this->states.top()->draw(this->window, this->UIView);
-	}
+	}*/
 
 	this->window->display();
 }

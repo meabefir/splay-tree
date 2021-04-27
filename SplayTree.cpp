@@ -56,6 +56,34 @@ Node* SplayTree::findNode(int value, Node* curr_node, Node* parent)
     }
 }
 
+Node* SplayTree::findNodeWithoutFix(int value, Node* curr_node, Node* parent)
+{
+    if (this->root == nullptr)
+        return nullptr;
+
+    if (curr_node == nullptr)
+    {
+        return parent;
+    }
+
+    if (curr_node->data == value)
+    {
+        return curr_node;
+    }
+    else
+    {
+        if (value < curr_node->data)
+        {
+            return findNode(value, curr_node->left, curr_node);
+
+        }
+        else if (value > curr_node->data)
+        {
+            return findNode(value, curr_node->right, curr_node);
+        }
+    }
+}
+
 void SplayTree::rotate(Node* node)
 {
     if (node->parent == nullptr)

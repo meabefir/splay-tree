@@ -13,15 +13,21 @@ private:
 
     SplayTree* tree;
 
-    std::vector<Node*> nodesToRotate;
+    std::vector<std::pair<Node*, int>> nodesToRotate;
+
+    std::unordered_map<std::string, Component*>* components;
 
 public:
-    RotateComponent(SplayTree*);
+    RotateComponent(std::unordered_map<std::string, Component*>* components, SplayTree*);
     ~RotateComponent();
+
+    void setTree(SplayTree*);
 
     void splay(Node*);
 
     Node* findNode(int value, Node* curr_node = nullptr, Node* parent = nullptr);
+
+    void resetTimer();
 
     void rotate(Node*);
     void rotateRight(Node*);
